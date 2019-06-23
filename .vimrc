@@ -40,7 +40,7 @@ Plugin 'godlygeek/tabular'
 " Haskell
 Plugin 'neovimhaskell/haskell-vim'
 "Plugin 'enomsg/vim-haskellConcealPlus' learn 'the ascii way' first..
-Plugin 'Shougo/vimproc.vim'  "requirement of ghcmod-vim
+Plugin 'Shougo/vimproc.vim'  "requirement of ghcmod-vim and vim-delve
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'eagletmt/neco-ghc'
 Plugin 'Twinside/vim-hoogle'
@@ -48,6 +48,11 @@ Plugin 'mpickering/hlint-refactor-vim'
 
 " Elm
 Plugin 'ElmCast/elm-vim'
+
+" Go
+Plugin 'fatih/vim-go'
+Plugin 'sebdah/vim-delve'
+Plugin 'Shougo/vimshell.vim' " requirement for vim-delve
 
 " Allow pane movement to jump out of vim into tmux
 Plugin 'christoomey/vim-tmux-navigator'
@@ -335,3 +340,13 @@ let g:ale_linters.cpp = ['clangcheck', 'clangtidy', 'cppcheck']
 " clang-fromat
 map <C-I> :pyf ~/llvmInstalls/llvm-gcc-14-02-2018/share/clang/clang-format.py<cr>
 imap <C-I> <c-o>:pyf ~/llvmInstalls/llvm-gcc-14-02-2018/share/clang/clang-format.py<cr>
+
+let g:go_highlight_functions = 1
+let g:go_highlight_function_parameters = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_variable_declarations = 1
+let g:go_highlight_variable_assignments = 1
