@@ -1,3 +1,5 @@
 [user]
 	email = 36851433+andy-zam@users.noreply.github.com
 	name = andy-zam
+[credential]
+	helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
