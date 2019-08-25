@@ -35,6 +35,7 @@ Plugin 'justinmk/vim-sneak'
 "Plugin 'MaryHal/AceJump.vim' get this working!!!
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/Align'
+Plugin 'junegunn/vim-easy-align'
 Plugin 'godlygeek/tabular'
 
 " Haskell
@@ -190,9 +191,9 @@ set expandtab
 
 " 1 tab == 2 spaces, unless the file is already
 " using tabs, in which case tabs will be inserted.
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 
 " Linebreak on 500 characters
 set lbr
@@ -221,22 +222,22 @@ endfunc
 
 " Alignment {{{
 
-" easy-align config       (trying out Align for now..)
-"map ga <Plug>(EasyAlign)
-"map ga <Plug>(EasyAlign)
+" easy-align config
+map ga <Plug>(EasyAlign)
+map ga <Plug>(EasyAlign)
 
 " Stop Align plugin from forcing its mappings on us
-let g:loaded_AlignMapsPlugin=1
+"let g:loaded_AlignMapsPlugin=1
 " Align on equal signs
-map <Leader>a= :Align =<CR>
+"map <Leader>a= :Align =<CR>
 " Align on commas
-map <Leader>a, :Align ,<CR>
+"map <Leader>a, :Align ,<CR>
 " Align on pipes
-map <Leader>a<bar> :Align <bar><CR>
+"map <Leader>a<bar> :Align <bar><CR>
 " Prompt for align character
-map <leader>ap :Align
+"map <leader>ap :Align
 " Align on double quotes
-map <leader>a" :Align "
+"map <leader>a" :Align "
 " }}}
 
 " NERDTree {{{
@@ -264,7 +265,7 @@ nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
 
 " tagbar {{{
 
-map <leader>tt :TagbarToggle<CR>
+map <leader>tb :TagbarToggle<CR>
 
 set tags=tags;/
 set cst
