@@ -18,8 +18,8 @@ Plugin 'int3/vim-extradite'
 " IDE
 Plugin 'lyuts/vim-rtags'
 "Plugin 'jeaye/color_coded'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'w0rp/ale'
+Plugin 'natebosch/vim-lsc'
 
 " Search and browsing
 Plugin 'mileszs/ack.vim'
@@ -335,12 +335,50 @@ execute 'source '. haskell_config
 autocmd FileType haskell nnoremap <buffer> <leader>? :call ale#cursor#ShowCursorDetail()<cr>
 " }}}
 
-" only use linters that uses compile_commands.json
-let g:ale_linters.cpp = ['clangcheck', 'clangtidy', 'cppcheck']
+" IDE (ale+ccls+lsc C/C++) {{{
 
-" clang-fromat
-map <C-I> :pyf ~/llvmInstalls/llvm-gcc-14-02-2018/share/clang/clang-format.py<cr>
-imap <C-I> <c-o>:pyf ~/llvmInstalls/llvm-gcc-14-02-2018/share/clang/clang-format.py<cr>
+"let g:ale_cpp_clang_executable = 'clang-cl' " for windows
+let g:ale_completion_enabled = 1
+let g:ale_linters = {'cpp': ['ccls']}
+let g:ale_fixers = {'cpp': ['clang-format', 'clang-tidy']}
+let g:ale_c_parse_compile_commands = 1
+"let g:ale_c_build_dir = '/c/BuildArea/fw_clang'
+let g:ale_fix_on_save = 1
+set omnifunc=ale#completion#OmniFunc
+let g:ale_cpp_ccls_init_options = {
+\   'cache': {
+\       'directory': '/tmp/ccls/cache'
+\   }
+\ }
+
+if executable('ccls')
+
+  let g:lsc_server_commands = {
+    \ 'cpp': {
+    \    'command': 'ccls',
+    \    'message_hooks': {
+    \        'initialize': {
+    \            'initializationOptions': {'cache': {'directory': '/tmp/ccls/cache'}},
+    \            'rootUri': {m, p -> lsc#uri#documentUri(fnamemodify(findfile('compile_commands.json', expand('%:p') . ';'), ':p:h'))}
+    \        },
+    \    },
+    \  },
+    \}
+
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>c :LSClientGoToDefinition<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>h :ALEGoToDefinition<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>fr :LSClientFindReferences<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>nr :LSClientNextReference<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>pr :LSClientPreviousReference<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>rn :LSClientRename<CR>
+  nnoremap <silent> H :LSClientShowHover<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>cf :ALEFix<CR>
+endif
+
+
+" }}}
+
+" vim-go {{{
 
 let g:go_highlight_functions = 1
 let g:go_highlight_function_parameters = 1
@@ -351,3 +389,5 @@ let g:go_highlight_build_constraints = 1
 let g:go_highlight_generate_tags = 1
 let g:go_highlight_variable_declarations = 1
 let g:go_highlight_variable_assignments = 1
+
+" }}}
