@@ -20,6 +20,7 @@ Plugin 'lyuts/vim-rtags'
 "Plugin 'jeaye/color_coded'
 Plugin 'w0rp/ale'
 Plugin 'natebosch/vim-lsc'
+Plugin 'octol/vim-cpp-enhanced-highlight'
 
 " Search and browsing
 Plugin 'mileszs/ack.vim'
@@ -374,6 +375,9 @@ if executable('ccls')
   nnoremap <silent> H :LSClientShowHover<CR>
   autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>cf :ALEFix<CR>
 endif
+
+set signcolumn=yes
+highlight clear SignColumn
 
 
 " }}}
