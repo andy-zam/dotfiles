@@ -340,8 +340,8 @@ autocmd FileType haskell nnoremap <buffer> <leader>? :call ale#cursor#ShowCursor
 
 "let g:ale_cpp_clang_executable = 'clang-cl' " for windows
 let g:ale_completion_enabled = 1
-let g:ale_linters = {'cpp': ['ccls']}
-let g:ale_fixers = {'cpp': ['clang-format', 'clang-tidy']}
+let g:ale_linters = {'cpp': ['ccls', 'clangtidy']}
+let g:ale_fixers = {'cpp': ['clang-format']}
 let g:ale_c_parse_compile_commands = 1
 "let g:ale_c_build_dir = '/c/BuildArea/fw_clang'
 let g:ale_fix_on_save = 1
