@@ -18,7 +18,7 @@ Plugin 'int3/vim-extradite'
 " IDE
 Plugin 'lyuts/vim-rtags'
 "Plugin 'jeaye/color_coded'
-Plugin 'w0rp/ale'
+Plugin 'dense-analysis/ale'
 Plugin 'natebosch/vim-lsc'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 
@@ -340,8 +340,10 @@ autocmd FileType haskell nnoremap <buffer> <leader>? :call ale#cursor#ShowCursor
 
 "let g:ale_cpp_clang_executable = 'clang-cl' " for windows
 let g:ale_completion_enabled = 1
-let g:ale_linters = {'cpp': ['ccls', 'clangtidy']}
-let g:ale_fixers = {'cpp': ['clang-format']}
+let g:ale_linters = {'cpp': ['ccls', 'clangtidy'],
+                   \ 'go' : ['gofmt', 'gopls']}
+let g:ale_fixers = {'cpp': ['clang-format'],
+                 \  'go' : ['gofmt']}
 let g:ale_c_parse_compile_commands = 1
 "let g:ale_c_build_dir = '/c/BuildArea/fw_clang'
 let g:ale_fix_on_save = 1
@@ -373,7 +375,8 @@ if executable('ccls')
   autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>pr :LSClientPreviousReference<CR>
   autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>rn :LSClientRename<CR>
   nnoremap <silent> H :LSClientShowHover<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>cf :ALEFix<CR>
+  autocmd FileType c,cc,cpp,cxx,h,hpp,go map <silent> <leader>fi :ALEFix<CR>
+  autocmd FileType go map <silent> <leader>fr :ALEFindReferences<CR>
 endif
 
 set signcolumn=yes
@@ -392,6 +395,7 @@ let g:go_highlight_fields = 1
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_generate_tags = 1
 let g:go_highlight_variable_declarations = 1
-let g:go_highlight_variable_assignments = 1
+
+let g:go_auto_type_info = 1
 
 " }}}
