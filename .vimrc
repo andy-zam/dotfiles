@@ -21,6 +21,7 @@ Plugin 'lyuts/vim-rtags'
 Plugin 'dense-analysis/ale'
 Plugin 'natebosch/vim-lsc'
 Plugin 'octol/vim-cpp-enhanced-highlight'
+"Plugin 'vim-syntastic/syntastic'
 
 " Search and browsing
 Plugin 'mileszs/ack.vim'
@@ -55,6 +56,10 @@ Plugin 'ElmCast/elm-vim'
 Plugin 'fatih/vim-go'
 Plugin 'sebdah/vim-delve'
 Plugin 'Shougo/vimshell.vim' " requirement for vim-delve
+
+" Rust
+Plugin 'rust-lang/rust.vim'   " syntax highlighting
+Plugin 'racer-rust/vim-racer' " go-to and code completion
 
 " Allow pane movement to jump out of vim into tmux
 Plugin 'christoomey/vim-tmux-navigator'
@@ -366,7 +371,7 @@ if executable('ccls')
     \        },
     \    },
     \  },
-    \}
+    \ }
 
   autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>c :LSClientGoToDefinition<CR>
   autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>h :ALEGoToDefinition<CR>
@@ -399,3 +404,32 @@ let g:go_highlight_variable_declarations = 1
 let g:go_auto_type_info = 1
 
 " }}}
+
+" Syntastic config
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+
+
+" Vim Racer config
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+augroup END
+
+let g:lsc_server_commands = {'rust': 'rls'}
+nnoremap <silent> <C-Q> :LSClientShowHover<CR>
+nnoremap <silent> <C-B> :LSClientGoToDefinition<CR>
+nnoremap <silent> <C-N> :LSClientFindReferences<CR>
+nnoremap <silent> <F6> :LSClientRename<CR>
+nmap <silent> <F2> :lopen<CR>
+nmap <silent> <F3> :lclose<CR>
