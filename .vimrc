@@ -1,95 +1,184 @@
-" Vundle + plugin delcs {{{
-set shell=/bin/bash
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" VimPlug + plugin decls {{{
+call plug#begin('~/.vim/plugged')
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'jgdavey/tslime.vim'
+" Navigation
+Plug 'justinmk/vim-sneak'
+Plug 'preservim/nerdtree'
+Plug 'christoomey/vim-tmux-navigator'
 
-" Wiki
-Plugin 'vimwiki/vimwiki'
-
-" Git
-Plugin 'tpope/vim-fugitive'
-Plugin 'int3/vim-extradite'
+" Text Editing
+Plug 'Raimondi/delimitMate'
+Plug 'tpope/vim-surround'
+"Plugin 'vim-scripts/Align' easy-align for now
+Plug 'junegunn/vim-easy-align'
 
 " IDE
-Plugin 'lyuts/vim-rtags'
-"Plugin 'jeaye/color_coded'
-Plugin 'dense-analysis/ale'
-Plugin 'natebosch/vim-lsc'
-Plugin 'octol/vim-cpp-enhanced-highlight'
-"Plugin 'vim-syntastic/syntastic'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'purescript-contrib/purescript-vim'
+Plug 'FrigoEU/psc-ide-vim'
 
-" Search and browsing
-Plugin 'mileszs/ack.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'junegunn/fzf.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'majutsushi/tagbar'
+" Search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
-" Editing Enhancements
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'Raimondi/delimitMate'
-Plugin 'justinmk/vim-sneak'
-"Plugin 'MaryHal/AceJump.vim' get this working!!!
-Plugin 'tpope/vim-surround'
-Plugin 'vim-scripts/Align'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'godlygeek/tabular'
+" Wiki
+Plug 'vimwiki/vimwiki'
 
-" Haskell
-Plugin 'neovimhaskell/haskell-vim'
-"Plugin 'enomsg/vim-haskellConcealPlus' learn 'the ascii way' first..
-Plugin 'Shougo/vimproc.vim'  "requirement of ghcmod-vim and vim-delve
-Plugin 'eagletmt/ghcmod-vim'
-Plugin 'eagletmt/neco-ghc'
-Plugin 'Twinside/vim-hoogle'
-Plugin 'mpickering/hlint-refactor-vim'
-
-" Elm
-Plugin 'ElmCast/elm-vim'
-
-" Go
-Plugin 'fatih/vim-go'
-Plugin 'sebdah/vim-delve'
-Plugin 'Shougo/vimshell.vim' " requirement for vim-delve
-
-" Rust
-Plugin 'rust-lang/rust.vim'   " syntax highlighting
-Plugin 'racer-rust/vim-racer' " go-to and code completion
-
-" Allow pane movement to jump out of vim into tmux
-Plugin 'christoomey/vim-tmux-navigator'
-
-" Python
-"Plugin 'davidhalter/jedi-vim'
-"Plugin 'vim-scripts/Conque-GDB'
-"
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+" Colour Scheme
+Plug 'altercation/vim-colors-solarized'
+call plug#end()
 " }}}
 
-" General {{{
-set number                  " line numbers
-syntax on
-set nohlsearch              " stop search highlighting. i can see thx
-:let loaded_matchparen = 1  " stop parenthesis highlighting
-:let mapleader = " "
-set backupdir=~/.vim/backup//
-set directory=~/.vim/swp//  " don't dump swp files just anywhere, put 'em here
+" Coc config {{{
 
-set background=dark
-colorscheme solarized
+set hidden " TextEdit might fail if hidden is not set.
+set nobackup " Some servers have issues with backup files, see #649.
+set nowritebackup
+set cmdheight=2 " Give more space for displaying messages.
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+set shortmess+=c " Don't pass messages to |ins-completion-menu|.
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
 
-" Set to auto read when a file is changed from the outside
-set autoread
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>fo  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
 " }}}
 
-" .vimrc specific {{{
+" Enable Group-Folding of this config {{{
 augroup vimrcFold
   " fold vimrc itself by categories
   autocmd!
@@ -108,26 +197,23 @@ augroup sourcing
 augroup END
 " }}}
 
-" Vim UI {{{
-" Turn on the WiLd menu
-set wildmenu
-" Tab-complete files up to longest unambiguous prefix
-set wildmode=list:longest,full
+" User Interface {{{
+:let mapleader = " "
 
-" Show trailing whitespace
-set list
+set background=dark
+colorscheme solarized
+highlight clear SignColumn
+highlight clear StatusLine
+
+set number
+set list " Show trailing whitespace
 " But only interesting whitespace
 if &listchars ==# 'eol:$'
   set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 endif
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" No annoying sound on errors
-set noerrorbells
+set lazyredraw " Don't redraw while executing macros (good performance config)
+set noerrorbells " No annoying sound on errors
 set vb t_vb=
-
 if &term =~ '256color'
   " disable Background Color Erase (BCE) so that color schemes
   " render properly when inside 256-color tmux and GNU screen.
@@ -136,70 +222,22 @@ if &term =~ '256color'
 endif
 set t_Co=256
 
-" Force redraw
-map <silent> <leader>r :redraw!<CR>
-
+map <silent> <leader>r :redraw!<CR> " Force redraw
 " Change cursor shape between insert and normal mode in iTerm2.app
 if $TERM_PROGRAM =~ "iTerm"
   let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
   let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
 endif
 
-" Makes search act like search in modern browsers
-set incsearch
+set incsearch " Makes search act like search in modern browsers
+nnoremap <leader>bo <c-w>o " close every window in current tabview but the current
 
-" Open file prompt with current path
-nmap <leader>e :e <C-R>=expand("%:p:h") . '/'<CR>
-
-" close every window in current tabview but the current
-nnoremap <leader>bo <c-w>o
-
-" }}}
-
-" Customised mappings {{{
-" substitute word under the cursor
-:nnoremap <Leader>s :.,$s/\<<C-r><C-w>\>//gc<Left><Left><Left>
-
-" append a semi-colon at end of line and escape to normal mode. Useful for
-" c-style coding and best used in conjunction with Raimondi/delimitMate
-:inoremap <C-e> A;
-
-" bring up list of recently accessed files
-:nnoremap <Leader>f :bro old
-
-" map clang-formatter
-map <C-K> :pyf /usr/share/clang/clang-format-3.8/clang-format.py<cr>
-imap <C-K> <c-o>:pyf /usr/share/clang/clang-format-3.8/clang-format.py<cr>
-" }}}
-
-" Use ripgrep when we can {{{
-if executable('rg')
-  let g:ctrlp_user_command = 'rg --files %s'
-  let g:ctrlp_use_caching = 0
-  let g:ctrlp_working_path_mode = 'ra'
-  let g:ctrlp_switch_buffer = 'et'
-
-  " also use rg for ack
-  let g:ackprg = 'rg --vimgrep --no-heading'
-endif
-" }}}
-
-" CtrlP config {{{
-let g:ctrlp_max_files=0
-let g:ctrlp_show_hidden=1
-let g:ctrlp_custom_ignore = { 'dir': '\v[\/](.git|.cabal-sandbox|.stack-work)$' }
-" }}}
-
-" Text, tab and indent related {{{
-
-" Use spaces instead of tabs
-set expandtab
-
+set expandtab " Use spaces instead of tabs
 " 1 tab == 2 spaces, unless the file is already
 " using tabs, in which case tabs will be inserted.
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
 
 " Linebreak on 500 characters
 set lbr
@@ -223,7 +261,19 @@ func! DeleteTrailingWS()
   %s/\s\+$//ge
   exe "normal `z"
 endfunc
+set directory=~/.vim//  " swap files go here rather than being scattered
 
+let t:is_transparent = 0
+function! Toggle_transparent()
+    if t:is_transparent == 0
+        hi Normal guibg=NONE ctermbg=NONE
+        let t:is_transparent = 1
+    else
+        set background=dark
+        let t:is_tranparent = 0
+    endif
+endfunction
+nnoremap <C-t> : call Toggle_transparent()<CR> " This overrides tagstack fn
 " }}}
 
 " Alignment {{{
@@ -269,167 +319,23 @@ nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
 
 " }}}
 
-" tagbar {{{
-
-map <leader>tb :TagbarToggle<CR>
-
-set tags=tags;/
-set cst
-set csverb
-
+" Fuzzy search {{{
+nnoremap <silent> <C-p> :Files<CR>
+"nnoremap <silent> <C-g> :GFiles<CR> <- this interferes with ListFileInfo, find another mapping
+nnoremap <silent> <C-l> :Buffers<CR>
 " }}}
 
-" Git {{{
-
-let g:extradite_width = 60
-" Hide messy Ggrep output and copen automatically
-function! NonintrusiveGitGrep(term)
-  execute "copen"
-  " Map 't' to open selected item in new tab
-  execute "nnoremap <silent> <buffer> t <C-W><CR><C-W>T"
-  execute "silent! Ggrep " . a:term
-  execute "redraw!"
-endfunction
-
-command! -nargs=1 GGrep call NonintrusiveGitGrep(<q-args>)
-nmap <leader>gs :Gstatus<CR>
-nmap <leader>gg :copen<CR>:GGrep 
-nmap <leader>gl :Extradite!<CR>
-nmap <leader>gd :Gdiff<CR>
-nmap <leader>gb :Gblame<CR>
-
-function! CommittedFiles()
-  " Clear quickfix list
-  let qf_list = []
-  " Find files committed in HEAD
-  let git_output = system("git diff-tree --no-commit-id --name-only -r HEAD\n")
-  for committed_file in split(git_output, "\n")
-    let qf_item = {'filename': committed_file}
-    call add(qf_list, qf_item)
-  endfor
-  " Fill quickfix list with them
-  call setqflist(qf_list)
-endfunction
-
-" Show list of last-committed files
-nnoremap <silent> <leader>g? :call CommittedFiles()<CR>:copen<CR>
-
-" }}}
-
-" Completion {{{
-set completeopt+=longest
-
-" Use buffer words as default tab completion
-let g:SuperTabDefaultCompletionType = '<c-x><c-p>'
-
-" }}}
-
-" Slime {{{
-
-vmap <silent> <Leader>rs <Plug>SendSelectionToTmux
-nmap <silent> <Leader>rs <Plug>NormalModeSendToTmux
-nmap <silent> <Leader>rv <Plug>SetTmuxVars
-
-" }}}
-
-" Source Haskell {{{
-let haskell_config = $HOME . "/.vimrc.haskell"
-execute 'source '. haskell_config
-" }}}
-
-" Ale error display {{{
-autocmd FileType haskell nnoremap <buffer> <leader>? :call ale#cursor#ShowCursorDetail()<cr>
-" }}}
-
-" IDE (ale+ccls+lsc C/C++) {{{
-
-"let g:ale_cpp_clang_executable = 'clang-cl' " for windows
-let g:ale_completion_enabled = 1
-let g:ale_linters = {'cpp': ['ccls', 'clangtidy'],
-                   \ 'go' : ['gofmt', 'gopls']}
-let g:ale_fixers = {'cpp': ['clang-format'],
-                 \  'go' : ['gofmt']}
-let g:ale_c_parse_compile_commands = 1
-"let g:ale_c_build_dir = '/c/BuildArea/fw_clang'
-let g:ale_fix_on_save = 1
-set omnifunc=ale#completion#OmniFunc
-let g:ale_cpp_ccls_init_options = {
-\   'cache': {
-\       'directory': '/tmp/ccls/cache'
-\   }
-\ }
-
-if executable('ccls')
-
-  let g:lsc_server_commands = {
-    \ 'cpp': {
-    \    'command': 'ccls',
-    \    'message_hooks': {
-    \        'initialize': {
-    \            'initializationOptions': {'cache': {'directory': '/tmp/ccls/cache'}},
-    \            'rootUri': {m, p -> lsc#uri#documentUri(fnamemodify(findfile('compile_commands.json', expand('%:p') . ';'), ':p:h'))}
-    \        },
-    \    },
-    \  },
-    \ }
-
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>c :LSClientGoToDefinition<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>h :ALEGoToDefinition<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>fr :LSClientFindReferences<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>nr :LSClientNextReference<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>pr :LSClientPreviousReference<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp map <silent> <leader>rn :LSClientRename<CR>
-  nnoremap <silent> H :LSClientShowHover<CR>
-  autocmd FileType c,cc,cpp,cxx,h,hpp,go map <silent> <leader>fi :ALEFix<CR>
-  autocmd FileType go map <silent> <leader>fr :ALEFindReferences<CR>
-endif
-
-set signcolumn=yes
-highlight clear SignColumn
-
-
-" }}}
-
-" vim-go {{{
-
-let g:go_highlight_functions = 1
-let g:go_highlight_function_parameters = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_generate_tags = 1
-let g:go_highlight_variable_declarations = 1
-
-let g:go_auto_type_info = 1
-
-" }}}
-
-" Syntastic config
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-
-
-" Vim Racer config
-augroup Racer
-    autocmd!
-    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
-    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
-    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
-    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
-    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
-augroup END
-
-let g:lsc_server_commands = {'rust': 'rls'}
-nnoremap <silent> <C-Q> :LSClientShowHover<CR>
-nnoremap <silent> <C-B> :LSClientGoToDefinition<CR>
-nnoremap <silent> <C-N> :LSClientFindReferences<CR>
-nnoremap <silent> <F6> :LSClientRename<CR>
-nmap <silent> <F2> :lopen<CR>
-nmap <silent> <F3> :lclose<CR>
+" psc ide config
+nm <buffer> <silent> <leader>L :Plist<CR>
+nm <buffer> <silent> <leader>l :Pload!<CR>
+nm <buffer> <silent> <leader>r :Prebuild!<CR>
+nm <buffer> <silent> <leader>f :PaddClause<CR>
+nm <buffer> <silent> <leader>t :PaddType<CR>
+nm <buffer> <silent> <leader>a :Papply<CR>
+nm <buffer> <silent> <leader>A :Papply!<CR>
+nm <buffer> <silent> <leader>C :Pcase!<CR>
+nm <buffer> <silent> <leader>i :Pimport<CR>
+nm <buffer> <silent> <leader>qa :PaddImportQualifications<CR>
+nm <buffer> <silent> <leader>g :Pgoto<CR>
+nm <buffer> <silent> <leader>p :Pursuit<CR>
+nm <buffer> <silent> <leader>T :Ptype<CR>
