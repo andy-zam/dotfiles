@@ -1,4 +1,4 @@
 # Defined in - @ line 0
-function config --description 'alias config /usr/bin/git --git-dir /home/andy/.dotfiles --work-tree=/home/andy'
-	/usr/bin/git --git-dir /home/andy/.dotfiles --work-tree=/home/andy $argv;
+function config --description 'alias config /usr/bin/git --git-dir $HOME/.dotfiles --work-tree=$HOME'
+	/usr/bin/git --git-dir $HOME/.dotfiles --work-tree=$HOME $argv;
 end
