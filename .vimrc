@@ -22,6 +22,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'purescript-contrib/purescript-vim'
 Plug 'FrigoEU/psc-ide-vim'
+Plug 'martinda/Jenkinsfile-vim-syntax'
 
 " Search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -46,13 +47,7 @@ set cmdheight=2 " Give more space for displaying messages.
 set updatetime=300
 set shortmess+=c " Don't pass messages to |ins-completion-menu|.
 " Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -226,7 +221,6 @@ if &term =~ '256color'
   " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
   set t_ut=
 endif
-set t_Co=256
 
 map <silent> <leader>r :redraw!<CR> " Force redraw
 " Change cursor shape between insert and normal mode in iTerm2.app
@@ -345,3 +339,15 @@ nm <buffer> <silent> <leader>qa :PaddImportQualifications<CR>
 nm <buffer> <silent> <leader>g :Pgoto<CR>
 nm <buffer> <silent> <leader>p :Pursuit<CR>
 nm <buffer> <silent> <leader>T :Ptype<CR>
+
+let g:coc_filetype_map = {
+  \ 'yaml.ansible': 'ansible',
+  \ 'yml.ansible': 'ansible',
+  \ 'yml': 'ansible',
+  \ 'yaml': 'ansible',
+  \ }
+
+set mouse=
+
+" fix coc.nvim compat issue with vim-colors-solarized
+autocmd VimEnter,ColorScheme * hi! link CocFloating CocHintFloat
